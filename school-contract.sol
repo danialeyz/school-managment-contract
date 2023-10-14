@@ -67,27 +67,27 @@ contract SchoolManagment {
 //     }
 
 
-    // aading teacher
+    // adding teacher
     function addTeacher(address TeacherAdress, string memory firstName,
      string memory lastName, uint age, uint idNumber) public {
       require(msg.sender == managerAddress , "Only the manager can add teachers.");
         teachers.push(Teacher(TeacherAdress, firstName, lastName, age, idNumber));
     }
 
-    // aading student
+    // adding student
     function addStudent( string memory firstName, string memory lastName,uint idNumber, 
     bool isPaid, uint age) public {
        require(msg.sender == managerAddress, "Only the manager can add teachers.");
         students.push(Student(firstName, lastName,  idNumber, isPaid, age));
     }
 
-    // aading lesson
+    // adding lesson
     function addLesson(string memory courseName) public {
     require(msg.sender == managerAddress, "Only the manager can add teachers.");
     lessons.push(Lesson(courseName));
     }
 
-    // ading class
+    // adding class
     function addClass(uint classId ,string memory lessonName ,uint studentsCount, string memory teacherName , uint8 grade) public {
     require(msg.sender == managerAddress, "Only the manager can add teachers.");
     classes.push(Class(classId ,lessonName ,studentsCount, teacherName , grade));
