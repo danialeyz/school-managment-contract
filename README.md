@@ -12,7 +12,7 @@ This repository contains my very first project using Solidity language on Remix 
 
 To get started with this project, follow these steps:
 
-1. Clone the repository: `git clone [repository URL]`
+1. Clone the repository: `git clone https://github.com/danialeyz/school-managment-contract.git`
 2. Open the project in Remix IDE.
 3. Compile and deploy the smart contract.
 4. Interact with the contract using the provided functions.
