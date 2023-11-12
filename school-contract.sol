@@ -1,14 +1,20 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity ^0.8.0;
 
 //Title : School managment program
 //Author : Danial Eyvazi
 
 contract SchoolManagment { 
 
-   // school manager adress 
+   //Modifiers
+   modifier managerCheck {
+          require(msg.sender == managerAddress , "Only the manager can do this ."); // for the functionalities that are only for manager
+          _;
+   }
 
+   // Main variables
    address private managerAddress = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4; // An example of the manager's address
+   bool private  isManagerDeclared; // Deafault is false 
    
    // Main data structures
 
@@ -21,12 +27,10 @@ contract SchoolManagment {
     }
 
     struct Manager {
-        address managerAddress;
         string firstName;
         string lastName;
         uint age;
         uint idNumber; 
-        bool isManager;
     }
 
     struct Student {
@@ -60,44 +64,41 @@ contract SchoolManagment {
 
 // =============== Adding Functions ==================
 
-//    function addManager(address TeacherAdress, string memory firstName, 
-//     string memory lastName, uint age, uint idNumber) public {
-//       require(msg.sender == managerAddress, "Only the manager can add teachers.");
-//         teachers.push(Teacher(TeacherAdress, firstName, lastName, age, idNumber));
-//     }
+   function addManager(string memory firstName, 
+    string memory lastName, uint age, uint idNumber) public managerCheck{
+        managers.push(Manager(firstName , lastName , age , idNumber));
+    }
 
 
-    // adding teacher
+    // aading teacher
     function addTeacher(address TeacherAdress, string memory firstName,
-     string memory lastName, uint age, uint idNumber) public {
-      require(msg.sender == managerAddress , "Only the manager can add teachers.");
+     string memory lastName, uint age, uint idNumber) public managerCheck{
         teachers.push(Teacher(TeacherAdress, firstName, lastName, age, idNumber));
     }
 
-    // adding student
+    // aading student
     function addStudent( string memory firstName, string memory lastName,uint idNumber, 
-    bool isPaid, uint age) public {
-       require(msg.sender == managerAddress, "Only the manager can add teachers.");
+    bool isPaid, uint age) public managerCheck{
+
         students.push(Student(firstName, lastName,  idNumber, isPaid, age));
     }
 
-    // adding lesson
-    function addLesson(string memory courseName) public {
-    require(msg.sender == managerAddress, "Only the manager can add teachers.");
+    // aading lesson
+    function addLesson(string memory courseName) public managerCheck{
+
     lessons.push(Lesson(courseName));
     }
 
-    // adding class
-    function addClass(uint classId ,string memory lessonName ,uint studentsCount, string memory teacherName , uint8 grade) public {
-    require(msg.sender == managerAddress, "Only the manager can add teachers.");
+    // ading class
+    function addClass(uint classId ,string memory lessonName ,uint studentsCount, string memory teacherName , uint8 grade) public managerCheck{
+
     classes.push(Class(classId ,lessonName ,studentsCount, teacherName , grade));
     }
 
 // ================ Deleting functions ==================
 
   // Deleting a teacher
-    function deleteTeacher(uint idNumber) public {
-        require(msg.sender == managerAddress, "Only the manager can delete teachers.");
+    function deleteTeacher(uint idNumber) public managerCheck{
         for (uint i = 0; i < teachers.length; i++) {
             if (teachers[i].idNumber == idNumber) {
                 teachers[i] = teachers[teachers.length - 1];
@@ -108,8 +109,8 @@ contract SchoolManagment {
     }
 
     // Deleting a student
-    function deleteStudent(uint idNumber) public {
-        require(msg.sender == managerAddress, "Only the manager can delete students.");
+    function deleteStudent(uint idNumber) public managerCheck{
+
         for (uint i = 0; i < students.length; i++) {
             if (students[i].idNumber == idNumber) {
                 students[i] = students[students.length - 1];
@@ -120,8 +121,8 @@ contract SchoolManagment {
     }
 
     // Deleting a lesson
-    function deleteLesson(string memory courseName) public {
-      require(msg.sender == managerAddress, "Only the manager can delete students.");
+    function deleteLesson(string memory courseName) public managerCheck{
+
       for (uint i = 0; i < lessons.length; i++) {
         if (keccak256(bytes(lessons[i].courseName)) == keccak256(bytes(courseName))) {
             lessons[i] = lessons[lessons.length - 1];
@@ -135,8 +136,8 @@ contract SchoolManagment {
 
    // Editing a teacher
     function editingTeacher(uint _idNumber , address _TeacherAdress , string memory _firstName ,
-     string memory _lastName , uint _age ) public returns (string memory){
-        require(msg.sender == managerAddress, "Only the manager can edit teachers.");
+     string memory _lastName , uint _age ) public managerCheck returns (string memory) {
+
         for (uint i = 0; i < teachers.length; i++) {
             if (teachers[i].idNumber == _idNumber) {
                 teachers[i].TeacherAdress = _TeacherAdress;
@@ -154,8 +155,8 @@ contract SchoolManagment {
 
     // Editing a student
     function editingStudent(uint _idNumber , string memory _firstName ,
-     string memory _lastName , uint _age ) public returns (string memory){
-        require(msg.sender == managerAddress, "Only the manager can edit teachers.");
+     string memory _lastName , uint _age ) public managerCheck returns (string memory){
+
         for (uint i = 0; i < teachers.length; i++) {
             if (students[i].idNumber == _idNumber) {
                 students[i].firstName = _firstName;
@@ -173,8 +174,8 @@ contract SchoolManagment {
     // Editing a class
     function editingClass(uint _classId ,string memory _lessonName ,  uint _studentsCount ,
     string memory _teacherName ,
-    uint8 _grade ) public returns (string memory){
-        require(msg.sender == managerAddress, "Only the manager can edit teachers.");
+    uint8 _grade ) public managerCheck returns (string memory){
+
         for (uint i = 0; i < teachers.length; i++) {
             if (classes[i].classId == _classId) {
                 classes[i].lessonName  = _lessonName;
@@ -195,8 +196,9 @@ contract SchoolManagment {
 // ========== Other functionalities =============
 
     // checking tuition 
-    function checkTuition(uint idNumber) public view returns (string memory) {
-      require(msg.sender == managerAddress, "Only the manager can check payments.");
+    function checkTuition(uint idNumber) public  managerCheck view returns (string memory) {
+      require(idNumber != students[idNumber].idNumber , "");
+
 
        for (uint i = 0; i < students.length; i++) {
         if (students[i].idNumber == idNumber) {
@@ -209,7 +211,7 @@ contract SchoolManagment {
        }
 
      // Add a default return statement
-     return "The student ID is wrong.";
+     return "";
      }
 }
 
