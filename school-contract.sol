@@ -8,7 +8,7 @@ contract SchoolManagment {
 
    //Modifiers
    modifier managerCheck {
-          require(msg.sender == managerAddress , "Only the manager can do this ."); // for the functionalities that are only for manager
+          require(msg.sender == managerAddress , "Only the manager can do this ."); // for manager specific functionalities 
           _;
    }
 
